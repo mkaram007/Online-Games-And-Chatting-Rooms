@@ -1,0 +1,335 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr 15 12:33:42 2019
+
+@author: M7md_Karam
+"""
+
+from socket import socket, AF_INET, SOCK_STREAM
+from threading import Thread
+from tkinter import *
+from tkinter import messagebox
+from tkinter import Label
+
+def receive_thread(s):
+    global turn
+    while True:
+        x=s.recv(500).decode('UTF-8')
+        if (x=='a'):
+            btn1["text"]='X'
+            btn1["bg"]="blue"
+            btn1["fg"]="white"
+            check()
+
+        if (x=='b'):
+            btn2["text"]='X'
+            btn2["bg"]="blue"
+            btn2["fg"]="white"
+            check()
+
+        if (x=='c'):
+            btn3["text"]='X'
+            btn3["bg"]="blue"
+            btn3["fg"]="white"
+            check()
+
+        if (x=='d'):
+            btn4["text"]='X'
+            btn4["bg"]="blue"
+            btn4["fg"]="white"
+            check()
+
+        if (x=='e'):
+            btn5["text"]='X'
+            btn5["bg"]="blue"
+            btn5["fg"]="white"
+            check()
+
+        if (x=='f'):
+            btn6["text"]='X'
+            btn6["bg"]="blue"
+            btn6["fg"]="white"
+            check()
+
+        if (x=='g'):
+            btn7["text"]='X'
+            btn7["bg"]="blue"
+            btn7["fg"]="white"
+            check()
+
+        if (x=='h'):
+            btn8["text"]='X'
+            btn8["bg"]="blue"
+            btn8["fg"]="white"
+            check()
+
+        if (x=='i'):
+            btn9["text"]='X'
+            btn9["bg"]="blue"
+            btn9["fg"]="white"
+            check()
+
+        turn = 2;
+        
+def send(x):
+    s.send(x.encode('UTF-8'))
+
+s=socket(AF_INET, SOCK_STREAM)
+s.connect(('127.0.0.1',7001))
+receive=Thread(target=receive_thread,args=(s,))
+receive.start()
+
+
+
+
+#create an empty window
+window = Tk()
+#change its title
+window.title ("Tic tac toe: Client Side")
+#change the dimensions
+window.geometry ("400x300")
+#create a label, 
+#1st parameter is the container.
+#2nd parameter is the text writen in the label.
+#3rd parameter is the font type, and size.
+lb1= Label(window, text="Player1: X",font=('Helvertica','15'))
+#positioning the label in a grid in the first row, and first column.
+lb1.grid(row=0, column=0)
+lb2= Label(window, text="Player2: O",font=('Helvertica','15'))
+lb2.grid(row=1, column=0)
+
+#create a flag to determine whether the game ended or not.
+flag = 1
+#creating a function for checking whether there's a winner or not yet, it'll be invoked everytime a player clicks a button.
+def check():
+	#apply the definition of the flag variable in the global scope.
+    global flag
+	#check function will be called every time it's invoked.
+    flag = flag + 1
+    #for simplicity
+    b1=btn1["text"] #equaling the text writen in btn1 with b1.
+    b2=btn2["text"]
+    b3=btn3["text"]
+    b4=btn4["text"]
+    b5=btn5["text"]
+    b6=btn6["text"]
+    b7=btn7["text"]
+    b8=btn8["text"]
+    b9=btn9["text"]
+    if b1==b2 and b2==b3 and b1=='O' or b1==b2 and b2==b3 and b1=='X':
+        #passing the name of the winner to the method win
+        win(b1)
+
+    if b4==b5 and b5==b6 and b4=='O' or b4==b5 and b5==b6 and b4=='X':
+        #passing the name of the winner to the method win
+        win(b4)
+
+    if b7==b8 and b8==b9 and b7=='O' or b7==b8 and b7==b8 and b7=='X':
+        #passing the name of the winner to the method win
+        win(b7)
+
+    if b1==b4 and b4==b7 and b1=='O' or b1==b4 and b4==b7 and b1=='X':
+        #passing the name of the winner to the method win
+        win(b1)
+        
+    if b2==b5 and b5==b8 and b2=='O' or b2==b5 and b5==b8 and b2=='X':
+        #passing the name of the winner to the method win
+        win(b2)
+        
+    if b3==b6 and b6==b9 and b3=='O' or b3==b6 and b6==b9 and b3=='X':
+        #passing the name of the winner to the method win
+        win(b3)
+        
+    if b1==b5 and b5==b9 and b1=='O' or b1==b5 and b5==b9 and b1=='X':
+        #passing the name of the winner to the method win
+        win(b1)
+        
+    if b3==b5 and b5==b7 and b3=='O' or b3==b5 and b5==b7 and b3=='X':
+        #passing the name of the winner to the method win
+        win(b3)
+    
+	#if the flag reaches the value 10, that means that all the buttons are clicked without reaching a winning state.
+    if flag == 10:
+        messagebox.showinfo("Game ended","Game Ended")
+        #the game closes
+        window.destroy()
+        
+        
+def win(player):
+    messagebox.showinfo("Game ended ", "Player "+player+" wins")
+    window.destroy()
+
+turn = 1
+#create a flag to determine the who's the player with this turn.
+def clicked1():
+    #make the turn variable global.
+    global turn
+    if btn1["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            btn1["text"] = " "
+        else:
+            turn=1
+            btn1["text"]='O'
+            btn1["fg"]="blue"
+            send('a')
+            check()
+
+def clicked2():
+    #make the turn variable global.
+    global turn
+    if btn2["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            btn2["text"] = " "
+        else:
+            turn=1
+            btn2["text"]='O'
+            btn2["fg"]="blue"
+            send('b')
+            check()
+
+def clicked3():
+    #make the turn variable global.
+    global turn
+
+    if btn3["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            btn3["text"] = " "
+            #send('c')
+        else:
+            turn=1
+            btn3["text"]='O'
+            btn3["fg"]="blue"
+            send('c')
+            check()
+
+def clicked4():
+    #make the turn variable global.
+    global turn
+
+    if btn4["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            btn4["text"] = " "
+
+        else:
+            turn=1
+            btn4["text"]='O'
+            btn4["fg"]="blue"
+            send('d')
+
+            check()
+        
+def clicked5():
+    #make the turn variable global.
+    global turn
+    if btn5["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            pass;
+
+        else:
+            turn=1
+            btn5["text"]='O'
+            btn5["fg"]="blue"
+            send('e')
+            check()
+        
+def clicked6():
+    #make the turn variable global.
+    global turn
+
+    if btn6["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            pass;
+
+        else:
+            turn=1
+            btn6["text"]='O'
+            btn6["fg"]="blue"
+            send('f')
+            check()
+        
+def clicked7():
+    #make the turn variable global.
+    global turn
+
+    if btn7["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            pass;
+
+        else:
+            turn=1
+            btn7["text"]='O'
+            btn7["fg"]="blue"
+            send('g')
+            check()
+        
+def clicked8():
+    #make the turn variable global.
+    global turn
+
+    if btn8["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            pass;
+
+        else:
+            turn=1
+            btn8["text"]='O'
+            btn8["fg"]="blue"
+            send('h')
+            check()
+        
+def clicked9():
+    #make the turn variable global.
+    global turn
+
+    if btn9["text"] == " ":
+        if turn == 1:
+            #modifying for the next play.
+            pass;
+
+        else:
+            turn=1
+            btn9["text"]='O'
+            btn9["fg"]="blue"
+            send('i')
+            check()
+
+btn1 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked1) 
+#space for performing comparison in the action.
+#the font is for the x or o when pressend.
+#Command is the attribute of the method executed when the button is clicked.
+btn1.grid(row=0,column=1)
+
+btn2 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked2) 
+btn2.grid(row=0,column=2)
+
+btn3 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked3) 
+btn3.grid(row=0,column=3)
+
+btn4 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked4) 
+btn4.grid(row=1,column=1)
+
+btn5 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked5) 
+btn5.grid(row=1,column=2)
+
+btn6 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked6) 
+btn6.grid(row=1,column=3)
+
+btn7 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked7) 
+btn7.grid(row=2,column=1)
+
+btn8 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked8) 
+btn8.grid(row=2,column=2)
+
+btn9 = Button(window, text=" ",bg="white",fg="black", width=3, height=1, font=('Helvertica','15'),command=clicked9) 
+btn9.grid(row=2,column=3)
+
+
+window.mainloop()
