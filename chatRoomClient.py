@@ -5,12 +5,12 @@ Created on Fri Apr 26 22:13:17 2019
 @author: M7md_Karam
 """
 
-from tkinter import Tk, Label, Button, Entry, END
+#For GUI.
+from tkinter import Tk, Button, Label, Entry, END
+#For Communication.
 from socket import socket, AF_INET, SOCK_STREAM
+#For Multi-threading.
 from threading import Thread
-
-wind = Tk()
-
 
 def receive_thread(s):
     while True:
@@ -21,20 +21,17 @@ def receive_thread(s):
         else:
             lbl["text"]=lbl["text"]+"\n"+x
             
-
-
 def send_function(*args):
-    y = en.get()
-    if lbl["text"]=="Nothing received":
-        lbl["text"]=y
-    else:
-        lbl["text"]=lbl["text"]+"\n"+"Me: "+y
-    s.send(y.encode('UTF-8'))
+    x = en.get()
+    lbl["text"]=lbl["text"]+"\n"+"Me: "+x
+    s.send(x.encode('UTF-8'))
     en.delete(0,END)
     
-wind.title ("Chat Room")
+wind = Tk()
+wind.title ("Chat Member")
 wind.geometry ('600x400')
 wind.config(background="#222222")
+
 en = Entry (wind,width=48,bg="#222222",fg="#dddddd",font=('Comic Sans MS','15'))
 en.grid (column = 0, row=1, pady=1, padx = 10)
 en.bind("<Return>", send_function)

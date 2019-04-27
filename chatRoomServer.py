@@ -4,20 +4,13 @@ Created on Mon Apr 22 12:56:16 2019
 
 @author: M7md_Karam
 """
-
+#For communication.
 from socket import socket, AF_INET, SOCK_STREAM
+#For Multi-threading.
 from _thread import start_new_thread
 
-s=socket(AF_INET, SOCK_STREAM)
-host = '127.0.0.1'
-port = 7010
-s.bind((host, port))
-s.listen(5)
-print ("Server established")
-
-clients= []
-
 def connectNewUser (c):
+    #Sending the number of the client.
     start_msg = "You're client number "+str(clientNumber)
     c.send(start_msg.encode('UTF-8'))
     while True:
@@ -40,7 +33,21 @@ def sendToAll(msg, con):
             specClientMsg = "Client"+str(clientNumber)+": "+msg
             client.send(specClientMsg.encode('UTF-8'))
             
-            
+#Creating an unbounded socket.
+s=socket(AF_INET, SOCK_STREAM)
+#Defining the server's IP.
+host = '127.0.0.1'
+#Defining the server's port number of the service.
+port = 7010
+#Binding both IP and port number to each other.
+s.bind((host, port))
+#Waiting for a client to connect.
+s.listen(5)
+print ("Server established")
+
+#Creating a list for containing the sessions numbers provided for each client.
+clients= []
+
 while True:
     c, ad = s.accept()
     clients.append(c)
