@@ -14,59 +14,66 @@ from _thread import start_new_thread
 def receive_thread(c):
     while True:
         y = c.recv(500).decode('UTF-8')
-        paddle_b.sety(y)
+        if y == "reset":
+            ball.goto(0,0)
+            ball.dx *= -1
+
+        else:    
+            paddle_b.sety(int(y))
 
 def send_function(y):
-    c.send(str(y).encode('UTF-8'))
-
-wind = Screen()
-wind.title("Ping Pong: Server Side")
-wind.bgcolor("#222222")
-wind.setup(width=800, height=600)
-wind.tracer(0)
-
-# Score
-score_a = 0
-score_b = 0
-
-# Paddle A
-paddle_a = Turtle()
-paddle_a.speed(0)
-paddle_a.shape("square")
-paddle_a.color("blue")
-paddle_a.shapesize(stretch_wid=5, stretch_len=1)
-paddle_a.penup()
-paddle_a.goto(-350, 0)
-
-# Paddle B
-paddle_b = Turtle()
-paddle_b.speed(0)
-paddle_b.shape("square")
-paddle_b.color("red")
-paddle_b.shapesize(stretch_wid=5, stretch_len=1)
-paddle_b.penup()
-paddle_b.goto(350, 0)
-
-# Ball
-ball = Turtle()
-ball.speed(0)
-ball.shape("circle")
-ball.color("white")
-ball.penup()
-ball.goto(0, 0)
-ball.dx = .5
-ball.dy = -.5
-
-# Pen
-pen = Turtle()
-pen.speed(0)
-pen.color("white")
-pen.penup()
-pen.hideturtle()
-pen.goto(0, 260)
-pen.write("Player A: 0          Player B: 0", align="center", font=("Comic Sans MS", 15, "normal"))
-
-# Function
+    x = str(y)
+    c.send(x.encode('UTF-8'))
+    
+def gameloop(c):
+    # Score
+    score_a = 0
+    score_b = 0
+    
+    # Main game loop
+    while True:
+        wind.update()
+        
+    	# Move the ball
+        ball.setx(ball.xcor() + ball.dx)
+        ball.sety(ball.ycor() + ball.dy)
+    
+    	# Border checking
+        if ball.ycor() > 140:
+            ball.sety(140)
+            ball.dy *= -1
+    
+        if ball.ycor() < -140:
+            ball.sety(-140)
+            ball.dy *= -1
+    
+        if ball.xcor() > 190:
+            ball.goto(0, 0)
+            send_function("reset")
+            ball.dx *= -1
+            score_a += 1
+            pen.clear()
+            pen.write("Player A: {}           Player B: {}".format(score_a, score_b), align="center", font=("Comic Sans MS", 15, "normal"))
+    
+        if ball.xcor() < -190:
+            ball.goto(0, 0)
+            send_function("reset")
+            ball.dx *= -1
+            score_b += 1
+            pen.clear()
+            pen.write("Player A: {}            Player B: {}".format(score_a, score_b), align="center", font=("Comic Sans MS", 15, "normal"))
+    
+        # Paddle and ball collisions
+        if ball.xcor() > 140 and ball.xcor() < 150 and ball.ycor() < paddle_b.ycor() + 40 and ball.ycor() > paddle_b.ycor() -40:
+            ball.setx(140)
+            ball.dx *= -1.2
+    
+        if ball.xcor() < -140 and ball.xcor() > -150 and ball.ycor() < paddle_a.ycor() + 40 and ball.ycor() > paddle_a.ycor() -40:
+            ball.setx(-140)
+            ball.dx /= -1.2
+            
+        
+    
 def paddle_a_up():
     y = paddle_a.ycor()
     y += 20
@@ -88,6 +95,51 @@ def paddle_b_down():
 	y = paddle_b.ycor()
 	y -= 20
 	paddle_b.sety(y)
+
+wind = Screen()
+wind.title("Ping Pong: Server Side")
+wind.bgcolor("#222222")
+wind.setup(width=450, height=350)
+wind.tracer(0)
+
+
+
+# Paddle A
+paddle_a = Turtle()
+paddle_a.speed(0)
+paddle_a.shape("square")
+paddle_a.color("blue")
+paddle_a.shapesize(stretch_wid=5, stretch_len=1)
+paddle_a.penup()
+paddle_a.goto(-150, 0)
+
+# Paddle B
+paddle_b = Turtle()
+paddle_b.speed(0)
+paddle_b.shape("square")
+paddle_b.color("red")
+paddle_b.shapesize(stretch_wid=5, stretch_len=1)
+paddle_b.penup()
+paddle_b.goto(150, 0)
+
+# Ball
+ball = Turtle()
+ball.speed(0)
+ball.shape("circle")
+ball.color("white")
+ball.penup()
+ball.goto(0, 0)
+ball.dx = 1
+ball.dy = -1
+
+# Pen
+pen = Turtle()
+pen.speed(0)
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 110)
+pen.write("Player A: 0          Player B: 0", align="center", font=("Comic Sans MS", 15, "normal"))
 
 # Keyboard binding
 wind.listen()
@@ -115,44 +167,5 @@ print ("connection established")
 #create thread for serving that session.
 start_new_thread(receive_thread,(c,))
 
-# Main game loop
-while True:
-    wind.update()	
-	# Move the ball
-    ball.setx(ball.xcor() + ball.dx)
-    ball.sety(ball.ycor() + ball.dy)
-
-    
-
-	# Border checking
-    if ball.ycor() > 290:
-        ball.sety(290)
-        ball.dy *= -1
-
-    if ball.ycor() < -290:
-        ball.sety(-290)
-        ball.dy *= -1
-
-    if ball.xcor() > 390:
-        ball.goto(0, 0)
-        ball.dx *= -1
-        score_a += 1
-        pen.clear()
-        pen.write("Player A: {}           Player B: {}".format(score_a, score_b), align="center", font=("Comic Sans MS", 15, "normal"))
-
-    if ball.xcor() < -390:
-        ball.goto(0, 0)
-        ball.dx *= -1
-        score_b += 1
-        pen.clear()
-        pen.write("Player A: {}            Player B: {}".format(score_a, score_b), align="center", font=("Comic Sans MS", 15, "normal"))
-
-    # Paddle and ball collisions
-    if ball.xcor() > 340 and ball.xcor() < 350 and ball.ycor() < paddle_b.ycor() + 40 and ball.ycor() > paddle_b.ycor() -40:
-        ball.setx(340)
-        ball.dx *= -1
-
-    if ball.xcor() < -340 and ball.xcor() > -350 and ball.ycor() < paddle_a.ycor() + 40 and ball.ycor() > paddle_a.ycor() -40:
-        ball.setx(-340)
-        ball.dx *= -1
-        
+start_new_thread(gameloop,(c,))
+wind.mainloop()
