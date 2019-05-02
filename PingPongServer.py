@@ -10,16 +10,13 @@ from turtle import Turtle, Screen
 from socket import socket, AF_INET, SOCK_STREAM
 #For Multi-threading.
 from _thread import start_new_thread
+#For delay
+from time import sleep
 
 def receive_thread(c):
     while True:
         y = c.recv(500).decode('UTF-8')
-        if y == "reset":
-            ball.goto(0,0)
-            ball.dx *= -1
-
-        else:    
-            paddle_b.sety(int(y))
+        paddle_b.sety(int(y))
 
 def send_function(y):
     x = str(y)
@@ -29,7 +26,7 @@ def gameloop(c):
     # Score
     score_a = 0
     score_b = 0
-    
+    sleep(10)
     # Main game loop
     while True:
         wind.update()
@@ -49,7 +46,6 @@ def gameloop(c):
     
         if ball.xcor() > 190:
             ball.goto(0, 0)
-            send_function("reset")
             ball.dx *= -1
             score_a += 1
             pen.clear()
@@ -57,7 +53,6 @@ def gameloop(c):
     
         if ball.xcor() < -190:
             ball.goto(0, 0)
-            send_function("reset")
             ball.dx *= -1
             score_b += 1
             pen.clear()
