@@ -13,7 +13,6 @@ from _thread import start_new_thread
 #For delay
 from time import sleep
 
-
 def receive_thread(s):
     while True:
         y = s.recv(500).decode('UTF-8')
@@ -27,6 +26,8 @@ def gameloop(s):
     # Score
     score_a = 0
     score_b = 0
+    
+    #Sleeping for 10 seconds
     sleep(10)
     # Main game loop
     while True:
@@ -69,15 +70,6 @@ def gameloop(s):
             ball.setx(-140)
             ball.dx /= -1.2
                 
-def paddle_a_up():
-	y = paddle_a.ycor()
-	y += 20
-	paddle_a.sety(y)
-
-def paddle_a_down():
-	y = paddle_a.ycor()
-	y -= 20
-	paddle_a.sety(y)
 
 def paddle_b_up():
     y = paddle_b.ycor()
@@ -136,8 +128,6 @@ pen.write("Player A: 0          Player B: 0", align="center", font=("Comic Sans 
 
 # Keyboard binding
 wind.listen()
-wind.onkeypress(paddle_a_up, "w")
-wind.onkeypress(paddle_a_down, "s")
 wind.onkeypress(paddle_b_up, "Up")
 wind.onkeypress(paddle_b_down, "Down")
 

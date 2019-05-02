@@ -26,6 +26,8 @@ def gameloop(c):
     # Score
     score_a = 0
     score_b = 0
+    
+    #Sleeping for 10 seconds
     sleep(10)
     # Main game loop
     while True:
@@ -81,16 +83,6 @@ def paddle_a_down():
     paddle_a.sety(y)
     send_function(y)
 
-def paddle_b_up():
-	y = paddle_b.ycor()
-	y += 20
-	paddle_b.sety(y)
-
-def paddle_b_down():
-	y = paddle_b.ycor()
-	y -= 20
-	paddle_b.sety(y)
-
 wind = Screen()
 wind.title("Ping Pong: Server Side")
 wind.bgcolor("#222222")
@@ -140,8 +132,6 @@ pen.write("Player A: 0          Player B: 0", align="center", font=("Comic Sans 
 wind.listen()
 wind.onkeypress(paddle_a_up, "w")
 wind.onkeypress(paddle_a_down, "s")
-wind.onkeypress(paddle_b_up, "Up")
-wind.onkeypress(paddle_b_down, "Down")
 
 #Creating an unbounded socket.
 s=socket(AF_INET, SOCK_STREAM)
